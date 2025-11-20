@@ -1,0 +1,1 @@
+Olá, somos a equipe I'ROBOT e esse é o nosso projeto de inovação, que visa ajudar geólogos com daltonismo verde-vermelho a visualizar mapas que utilizam cores para representar minerais ou outros elementos
