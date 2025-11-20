@@ -8,6 +8,7 @@ st.set_page_config(page_title="Processador Geométrico de Imagens", layout="wide
 
 st.title("Vendo o invisível - Projeto de inovação I'Robot")
 st.write("Este é um protótipo de como funciona nosso projeto de acessibilidade em mapas virtuais para arqueólogos com daltonismo, para testar basta fazer uploud de uma imagem jpg ou png e ver o resultado com formas geométricas!")
+st.write("Para mais informações sobre o projeto do estande do I'Robot! :)")
 
 # --- Barra Lateral (Parâmetros) ---
 st.sidebar.header("Configurações")
@@ -165,6 +166,7 @@ if uploaded_file is not None:
                 mime="image/png"
 
             )
+
 
 
 
