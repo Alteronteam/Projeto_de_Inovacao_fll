@@ -6,7 +6,7 @@ import io
 # --- Configuração da Página ---
 st.set_page_config(page_title="Processador Geométrico de Imagens", layout="wide")
 
-st.title("Vendo o invisível")
+st.title("Vendo o invisível - Projeto de inovação I'Robot")
 st.write("Fazer upload da imagem  𐔌˙.")
 
 # --- Barra Lateral (Parâmetros) ---
@@ -165,5 +165,6 @@ if uploaded_file is not None:
                 mime="image/png"
 
             )
+
 
 
