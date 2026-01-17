@@ -14,22 +14,22 @@ st.set_page_config(
 st.title("Vendo o invisível - Projeto de inovação I'Robot")
 st.write("Este é um protótipo de como funciona nosso projeto de acessibilidade em mapas virtuais.")
 
-# --- Barra Lateral (Parâmetros) ---
+#Barra Lateral (Parâmetros)
 st.sidebar.header("Configurações")
 
-# 1. Parâmetros de Cor (K-Means e Saturação)
+# Parâmetros de Cor (K-Means e Saturação)
 # Mantivemos a saturação pois ela ajuda o K-Means a separar melhor as cores
 SATURATION_FACTOR = st.sidebar.slider("Reforço de Cor (Pré-processamento)", 1.0, 5.0, 2.0, 0.1)
 
 # N_CORES substitui o antigo nível de posterização. 
-# O código do Corel sugeria 93, mas deixamos ajustável.
+# O código do Corel sugeria 93, mas deixa ajustável.
 N_CLUSTERS = st.sidebar.slider("Quantidade de Cores (K-Means)", 2, 64, 16, 1)
 
-# Suavização (Median Blur) - Remove ruídos e deixa a cor "chapada"
-# O slider garante números ímpares (obrigatório para o OpenCV)
+# Suavização (Median Blur)Remove ruídos e deixa a cor "chapada"
+# O slider garante números ímpares (para o OpenCV)
 BLUR_INTENSITY = st.sidebar.slider("Suavização das Manchas", 1, 15, 7, 2)
 
-# 2. Parâmetros Geométricos
+#Parâmetros Geométricos
 STEP_SIZE = st.sidebar.slider("Tamanho do Bloco (Pixels)", 5, 50, 50, 1)
 MIN_SIZE_PERCENT = st.sidebar.slider("Tamanho Mínimo Visível (%)", 0, 20, 5, 1) / 100.0
 
@@ -48,7 +48,7 @@ LINE_WIDTH = 1
 st.sidebar.subheader("Filtros de Fundo")
 BLACK_THRESHOLD = st.sidebar.slider("Ignorar pixels muito escuros", 0, 100, 10)
 
-# --- Funções de Desenho ---
+#Funções de Desenho 
 def draw_triangle(draw, center_x, center_y, size, outline_color):
     s = size / 2
     points = [
@@ -74,13 +74,13 @@ def draw_circle(draw, center_x, center_y, size, outline_color):
         width=LINE_WIDTH
     )
 
-# --- Nova Lógica de Processamento (Baseada no seu script Python) ---
+#Lógica de Processamento
 def apply_kmeans_processing(pil_img, n_colors, blur_k, saturation):
-    # 1. Conversão PIL -> OpenCV
-    # Convertemos para numpy array
+    # Conversão PIL -> OpenCV
+    # Converte para numpy array
     img_np = np.array(pil_img)
     
-    # 2. Pré-processamento: Saturação (Ajuda o K-Means a separar cores vivas)
+    #Pré-processamento: Saturação (Ajuda o K-Means a separar cores vivas)
     if saturation != 1.0:
         # Convertemos para PIL rapidinho para usar o Enhancer que é ótimo, depois voltamos
         temp_pil = Image.fromarray(img_np)
@@ -90,24 +90,24 @@ def apply_kmeans_processing(pil_img, n_colors, blur_k, saturation):
     # O OpenCV trabalha com BGR por padrão se lido via cv2.imread, 
     # mas como viemos do PIL, já estamos em RGB. Mantemos RGB.
     
-    # 3. Formatar dados para o algoritmo K-Means
+    # 3.Formatar dados para o algoritmo K-Means
     # Reshape para uma lista de pixels (altura*largura, 3 canais)
     Z = img_np.reshape((-1, 3))
     Z = np.float32(Z)
 
-    # 4. Executar K-Means (Configuração do seu script)
-    # criteria: (type, max_iter, epsilon)
+    # 4.Executar K-Means (Configuração do seu script)
+    # criterios: (type, max_iter, epsilon)
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
     
     # KMEANS_PP_CENTERS ajuda a escolher centros iniciais melhores
     ret, label, center = cv2.kmeans(Z, n_colors, None, criteria, 3, cv2.KMEANS_PP_CENTERS)
 
-    # 5. Reconstruir a imagem
+    # 5.Reconstruir a imagem
     center = np.uint8(center)
     res = center[label.flatten()]
     img_quantized = res.reshape((img_np.shape))
 
-    # 6. Aplicar Suavização (Median Blur)
+    # 6.Aplicar Suavização (Median Blur)
     # Isso cria o efeito "blob" (manchas sólidas) removendo ruído
     if blur_k > 0:
         # Garante que seja ímpar e >= 1
@@ -119,11 +119,11 @@ def apply_kmeans_processing(pil_img, n_colors, blur_k, saturation):
     # Retorna como imagem PIL para o resto do app usar
     return Image.fromarray(img_final)
 
-# --- Lógica Principal do App ---
+# Lógica Principal do App
 def process_image(original_img):
     orig_w, orig_h = original_img.size
     
-    # --- 1. Aplica o efeito K-Means (O "PowerTRACE" do código enviado) ---
+    # 1. Aplica o efeito K-Means (O "PowerTRACE" do código enviado)
     # Isso substitui a antiga saturação/posterização
     img_analysis_final = apply_kmeans_processing(
         original_img, 
@@ -132,7 +132,7 @@ def process_image(original_img):
         saturation=SATURATION_FACTOR
     )
     
-    # --- 2. Camada de Desenho (Geometria) ---
+    # 2. Camada de Desenho (Geometria)
     shape_layer = Image.new('RGBA', (orig_w, orig_h), (0, 0, 0, 0))
     draw = ImageDraw.Draw(shape_layer)
     
@@ -206,13 +206,13 @@ def process_image(original_img):
     
     return img_analysis_final, debug_composite, final_composite
 
-# --- Interface de Upload ---
+#Interface de Upload
 uploaded_file = st.file_uploader("Escolha uma imagem (JPG, PNG)", type=['jpg', 'jpeg', 'png'])
 
 if uploaded_file is not None:
     original_image = Image.open(uploaded_file)
     
-    # --- PRÉ-VISUALIZAÇÃO E LEGENDA ---
+    # PRÉ-VISUALIZAÇÃO E LEGENDA
     st.write("### Pré-visualização")
     
     col_preview, col_legend = st.columns([1, 1.5]) 
@@ -276,6 +276,7 @@ if uploaded_file is not None:
                 file_name="acessibilidade_visual_kmeans.png",
                 mime="image/png"
             )
+
 
 
 
