@@ -43,7 +43,7 @@ if outline_choice == "Preto":
 else:
     SHAPE_COLOR = (255, 255, 255, OPACITY_VAL) 
 
-LINE_WIDTH = 100
+LINE_WIDTH = 2
 
 st.sidebar.subheader("Filtros de Fundo")
 BLACK_THRESHOLD = st.sidebar.slider("Ignorar pixels muito escuros", 0, 100, 10)
@@ -311,6 +311,7 @@ if uploaded_file is not None:
                 file_name="acessibilidade_visual_kmeans.png",
                 mime="image/png"
             )
+
 
 
 
